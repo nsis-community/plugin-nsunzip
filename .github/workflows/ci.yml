@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Build plug-in
+        uses: nsis-dev/release-package@ebe53b3b0a66177ed65d6accc94d466ee8881c16 # v0.3.0
+        with:
+          name: nsUnzip
+          sources: |
+            Contrib/nsUnzip/api.c
+            Contrib/nsUnzip/crc32.c
+            Contrib/nsUnzip/crctab.c
+            Contrib/nsUnzip/crypt.c
+            Contrib/nsUnzip/explode.c
+            Contrib/nsUnzip/extract.c
+            Contrib/nsUnzip/fileio.c
+            Contrib/nsUnzip/globals.c
+            Contrib/nsUnzip/inflate.c
+            Contrib/nsUnzip/list.c
+            Contrib/nsUnzip/match.c
+            Contrib/nsUnzip/nsUnzip/nsUnzip.c
+            Contrib/nsUnzip/process.c
+            Contrib/nsUnzip/unreduce.c
+            Contrib/nsUnzip/unshrink.c
+            Contrib/nsUnzip/win32/crc_i386.c
+            Contrib/nsUnzip/win32/nt.c
+            Contrib/nsUnzip/win32/win32.c
+            Contrib/nsUnzip/windll/windll.c
+            Contrib/nsUnzip/zipinfo.c
+          strict: false
+          release: ${{ github.event_name == 'release' }}
